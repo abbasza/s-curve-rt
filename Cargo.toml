@@ -1,0 +1,32 @@
+[package]
+name = "s-curve-rt"
+version = "0.1.0"
+edition = "2021"
+authors = ["Abbas Zareei <abbaszareei1438@gmail.com>"]
+description = "Deterministic, zero-allocation #![no_std] online jerk-limited S-curve trajectory generator for real-time robotics and embedded control loops."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/abbasza/s-curve-rt"
+keywords = ["robotics", "no-std", "trajectory", "real-time", "embedded"]
+categories = ["embedded", "no-std", "science::robotics", "algorithms"]
+
+[lib]
+name = "s_curve_rt"
+crate-type = ["rlib", "staticlib", "cdylib"]
+
+[features]
+default = ["libm"]
+std = []
+ffi = []
+wasm = ["dep:wasm-bindgen", "std"]
+
+[dependencies]
+libm = { version = "0.2", optional = true }
+wasm-bindgen = { version = "0.2", optional = true }
+
+[dev-dependencies]
+criterion = "0.5"
+approx = "0.5"
+
+[[bench]]
+name = "trajectory_bench"
+harness = false
