@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv7em-none-eabihf, wasm32-unknown-unknown
+          components: rustfmt, clippy
+
+      - name: Check Formatting
+        run: cargo fmt --all -- --check
+
+      - name: Clippy Pedantic Check
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Run Unit Tests
+        run: cargo test --features "std ffi"
+
+      - name: Verify Bare-Metal Cortex-M4F (#![no_std]) Build
+        run: cargo check --target thumbv7em-none-eabihf --no-default-features --features libm
+
+      - name: Verify WebAssembly Build
+        run: cargo check --target wasm32-unknown-unknown --features wasm
